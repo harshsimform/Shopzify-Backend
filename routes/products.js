@@ -33,6 +33,7 @@ router.post("/", async (req, res) => {
       quantity: req.body.quantity,
       gender: req.body.gender,
       category: req.body.category,
+      displaySection: req.body.displaySection,
     });
 
     const newProduct = await product.save();

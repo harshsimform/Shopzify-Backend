@@ -33,6 +33,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  displaySection: {
+    type: String,
+    required: true,
+  },
   recordDate: {
     type: Date,
     required: true,
