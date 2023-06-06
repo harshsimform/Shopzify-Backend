@@ -1,9 +1,9 @@
 require("dotenv").config();
 
 const express = require("express");
-const cors = require("cors");
 const app = express();
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
 const db = mongoose.connection;
@@ -15,5 +15,8 @@ app.use(cors());
 
 const productsRouter = require("./routes/products");
 app.use("/product", productsRouter);
+
+const authRouter = require("./routes/auth");
+app.use("/auth", authRouter);
 
 app.listen(3000, () => console.log("Server Started"));
