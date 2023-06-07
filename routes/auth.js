@@ -75,6 +75,7 @@ router.post("/login", async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
       httpOnly: true,
+      sameSite: "none",
     });
 
     res.json({ accessToken });
