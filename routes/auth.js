@@ -66,10 +66,15 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // res.cookie("refreshToken", refreshToken, {
+    //   maxAge: 900000, //15 minute
+    //   httpOnly: true,
+    //   sameSite: "strict",
+    // });
+
     res.cookie("refreshToken", refreshToken, {
-      maxAge: 900000, //15 minute
+      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
       httpOnly: true,
-      sameSite: "strict",
     });
 
     res.json({ accessToken });
