@@ -41,13 +41,15 @@ router.post("/login", async (req, res) => {
     // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res
+        .status(400)
+        .json({ message: "user with provided email does not exist" });
     }
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Password does not match" });
     }
 
     // Generate access token
@@ -66,16 +68,10 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // res.cookie("refreshToken", refreshToken, {
-    //   maxAge: 900000, //15 minute
-    //   httpOnly: true,
-    //   sameSite: "strict",
-    // });
-
     res.cookie("refreshToken", refreshToken, {
-      expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      maxAge: 900000, //15 minute
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "strict",
     });
 
     res.json({ accessToken });
@@ -88,7 +84,7 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
   try {
     // Clear access token cookie on the client-side
-    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
     return res.status(200).json({
       message: "User logged out successfully",
     });

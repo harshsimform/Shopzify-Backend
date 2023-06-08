@@ -21,6 +21,26 @@ router.get("/:id", getProduct, (req, res) => {
   res.json(res.product);
 });
 
+// Search Products by category name
+router.get("/category/:key", async (req, res) => {
+  let data = await Product.find({
+    $or: [{ category: { $regex: req.params.key } }],
+  });
+  res.send(data);
+});
+
+// Search Product by name, description and category,
+router.get("/search/:key", async (req, res) => {
+  let data = await Product.find({
+    $or: [
+      { name: { $regex: req.params.key } },
+      { description: { $regex: req.params.key } },
+      { category: { $regex: req.params.key } },
+    ],
+  });
+  res.send(data);
+});
+
 // Creating one
 router.post("/", async (req, res) => {
   try {
