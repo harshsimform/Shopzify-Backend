@@ -21,6 +21,9 @@ app.use(
   })
 );
 
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
   if (req.headers["access-control-request-private-network"]) {
@@ -41,5 +44,8 @@ app.use("/product", productsRouter);
 
 const authRouter = require("./routes/auth");
 app.use("/auth", authRouter);
+
+const wishlistRouter = require("./routes/wishlist");
+app.use("/user-wishlist", wishlistRouter);
 
 app.listen(3000, () => console.log("Server Started"));
