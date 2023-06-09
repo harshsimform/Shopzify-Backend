@@ -70,4 +70,31 @@ router.post("/wishlist/toggle", verifyToken, async (req, res) => {
   }
 });
 
+// GET endpoint to fetch the wishlist
+router.get("/wishlists", verifyToken, async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    // Check if the user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find the user's wishlist
+    const wishlist = await Wishlist.findOne({ userId }).populate(
+      "products.product"
+    );
+
+    if (!wishlist) {
+      return res.status(404).json({ message: "Wishlist not found" });
+    }
+
+    res.status(200).json({ wishlist });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+});
+
 module.exports = router;

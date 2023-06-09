@@ -15,8 +15,11 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
-
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://temp-shopzify-admin.onrender.com/",
+    ],
     credentials: true,
   })
 );
@@ -25,9 +28,13 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header(
+    "Access-Control-Allow-Origin",
+    "http://localhost:5173",
+    "http://localhost:5174"
+  );
   if (req.headers["access-control-request-private-network"]) {
-    res.header("Access-Control-Allow-Private-Network", "true"); // Modify this line
+    res.header("Access-Control-Allow-Private-Network", "true");
   }
   res.header(
     "Access-Control-Allow-Headers",

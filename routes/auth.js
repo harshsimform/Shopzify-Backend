@@ -69,7 +69,7 @@ router.post("/login", async (req, res) => {
     );
 
     res.cookie("refreshToken", refreshToken, {
-      maxAge: 900000, //15 minute
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       httpOnly: true,
       sameSite: "strict",
     });
@@ -92,6 +92,36 @@ router.post("/logout", (req, res) => {
     return res.status(500).json({
       message: "Internal server error",
     });
+  }
+});
+
+// Refresh token
+router.post("/refresh", async (req, res) => {
+  const refreshToken = req.headers["refresh-token"];
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: "Refresh token missing" });
+  }
+
+  try {
+    // Verify the refresh token
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (err, user) => {
+      if (err) {
+        return res.status(403).json({ message: "Invalid refresh token" });
+      }
+
+      // Generate a new access token
+      const accessToken = jwt.sign(
+        { userId: user._id },
+        process.env.ACCESS_TOKEN,
+        { expiresIn: "15m" }
+      );
+
+      // Send the new access token in the response
+      res.json({ token: accessToken });
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
