@@ -1,60 +1,60 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const wishlistSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  products: [
-    {
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-      },
-      category: {
-        type: String,
-        required: true,
-      },
-      description: {
-        type: String,
-        required: true,
-      },
-      discountedPrice: {
-        type: Number,
-        required: true,
-      },
-      displaySection: {
-        type: String,
-        required: true,
-      },
-      gender: {
-        type: String,
-        required: true,
-      },
-      image: {
-        type: String,
-        required: true,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      originalPrice: {
-        type: Number,
-        required: true,
-      },
-      quantity: {
-        type: Number,
-        required: true,
-      },
-      recordDate: {
-        type: Date,
-        required: true,
-      },
-    },
-  ],
+	userId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+		required: true,
+	},
+	products: [
+		{
+			product: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Product',
+				required: true,
+			},
+			category: {
+				type: String,
+				required: true,
+			},
+			description: {
+				type: String,
+				required: true,
+			},
+			discountedPrice: {
+				type: Number,
+				required: true,
+			},
+			displaySection: {
+				type: String,
+				required: true,
+			},
+			gender: {
+				type: String,
+				required: true,
+			},
+			image: {
+				type: String,
+				required: true,
+			},
+			name: {
+				type: String,
+				required: true,
+			},
+			originalPrice: {
+				type: Number,
+				required: true,
+			},
+			quantity: {
+				type: Number,
+				required: true,
+			},
+			recordDate: {
+				type: Date,
+				required: true,
+			},
+		},
+	],
 });
 
-module.exports = mongoose.model("Wishlist", wishlistSchema);
+module.exports = mongoose.model('Wishlist', wishlistSchema);

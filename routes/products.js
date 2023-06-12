@@ -31,13 +31,17 @@ router.get("/category/:key", async (req, res) => {
 
 // Search Product by name, description and category,
 router.get("/search/:key", async (req, res) => {
-  let data = await Product.find({
+  const searchKey = req.params.key.replace(/\s/g, "\\s"); // Remove spaces from the search key
+  const regex = new RegExp(searchKey, "i"); // Create a case-insensitive regular expression
+
+  const data = await Product.find({
     $or: [
-      { name: { $regex: req.params.key } },
-      { description: { $regex: req.params.key } },
-      { category: { $regex: req.params.key } },
+      { name: { $regex: regex } },
+      { description: { $regex: regex } },
+      { category: { $regex: regex } },
     ],
   });
+
   res.send(data);
 });
 

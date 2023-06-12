@@ -55,4 +55,7 @@ app.use("/auth", authRouter);
 const wishlistRouter = require("./routes/wishlist");
 app.use("/user-wishlist", wishlistRouter);
 
-app.listen(3000, () => console.log("Server Started"));
+const cartRouter = require("./routes/cart");
+app.use("/user-cart", cartRouter);
+
+app.listen(8000, () => console.log("Server Started"));
