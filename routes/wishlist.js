@@ -5,8 +5,13 @@ const Product = require("../models/product");
 const verifyToken = require("../middleware/verifyToken");
 
 router.post("/wishlist/toggle", verifyToken, async (req, res) => {
+  console.log(req.body);
   const { product } = req.body;
-  const productId = product._id;
+  let productId = product._id;
+  if (req.body.isWishList) {
+    productId = product.productId;
+  }
+
   const userId = req.userId;
 
   try {
@@ -29,13 +34,13 @@ router.post("/wishlist/toggle", verifyToken, async (req, res) => {
 
     // Check if the product already exists in the wishlist
     const existingProduct = wishlist.products.find(
-      (item) => item.product.toString() === productId
+      (item) => item.productId.toString() === productId
     );
 
     if (existingProduct) {
       // If the product already exists, remove it from the wishlist
       wishlist.products = wishlist.products.filter(
-        (item) => item.product.toString() !== productId
+        (item) => item.productId.toString() !== productId
       );
       await wishlist.save();
       res.status(200).json({ message: "Product removed from wishlist" });
@@ -47,7 +52,7 @@ router.post("/wishlist/toggle", verifyToken, async (req, res) => {
       }
 
       const newProduct = {
-        product: productDetails._id,
+        productId: productDetails._id,
         category: productDetails.category,
         description: productDetails.description,
         discountedPrice: productDetails.discountedPrice,
@@ -82,9 +87,7 @@ router.get("/wishlists", verifyToken, async (req, res) => {
     }
 
     // Find the user's wishlist
-    const wishlist = await Wishlist.findOne({ userId }).populate(
-      "products.product"
-    );
+    const wishlist = await Wishlist.findOne({ userId }).populate("products");
 
     if (!wishlist) {
       return res.status(404).json({ message: "Wishlist not found" });
