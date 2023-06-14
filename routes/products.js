@@ -31,8 +31,8 @@ router.get("/category/:key", async (req, res) => {
 
 // Search Product by name, description and category,
 router.get("/search/:key", async (req, res) => {
-  const searchKey = req.params.key.replace(/\s/g, "\\s"); // Remove spaces from the search key
-  const regex = new RegExp(searchKey, "i"); // Create a case-insensitive regular expression
+  const searchKey = req.params.key.replace(/\s/g, "\\s");
+  const regex = new RegExp(searchKey, "i");
 
   const data = await Product.find({
     $or: [

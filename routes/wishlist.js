@@ -5,7 +5,6 @@ const Product = require("../models/product");
 const verifyToken = require("../middleware/verifyToken");
 
 router.post("/wishlist/toggle", verifyToken, async (req, res) => {
-  console.log(req.body);
   const { product } = req.body;
   let productId = product._id;
   if (req.body.isWishList) {
@@ -13,6 +12,7 @@ router.post("/wishlist/toggle", verifyToken, async (req, res) => {
   }
 
   const userId = req.userId;
+  console.log(req.body);
 
   try {
     // Check if the user exists
