@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
 const db = mongoose.connection;
@@ -23,7 +24,7 @@ app.use(
 		credentials: true,
 	})
 );
-
+app.use(cookieParser());
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
@@ -57,5 +58,8 @@ app.use('/user-wishlist', wishlistRouter);
 
 const cartRouter = require('./routes/cart');
 app.use('/user-cart', cartRouter);
+
+const addressRouter = require('./routes/address');
+app.use('/user-address', addressRouter);
 
 app.listen(3000, () => console.log('Server Started'));

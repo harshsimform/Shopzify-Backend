@@ -96,8 +96,8 @@ router.post('/logout', (req, res) => {
 });
 
 // Refresh token
-router.post('/refresh', async (req, res) => {
-	const refreshToken = req.headers['refresh-token'];
+router.get('/refresh', async (req, res) => {
+	const { refreshToken } = req.cookies;
 
 	if (!refreshToken) {
 		return res.status(401).json({ message: 'Refresh token missing' });
@@ -112,13 +112,13 @@ router.post('/refresh', async (req, res) => {
 
 			// Generate a new access token
 			const accessToken = jwt.sign(
-				{ userId: user._id },
+				{ userId: user.userId },
 				process.env.ACCESS_TOKEN,
 				{ expiresIn: '1h' }
 			);
 
 			// Send the new access token in the response
-			res.json({ token: accessToken });
+			res.json({ accessToken });
 		});
 	} catch (error) {
 		res.status(500).json({ message: 'Server error' });
