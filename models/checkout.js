@@ -6,6 +6,10 @@ const checkoutSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  recordDate: {
+    type: Date,
+    required: true,
+  },
   cartItems: [
     {
       discountedPrice: {
@@ -73,6 +77,10 @@ const checkoutSchema = new mongoose.Schema({
         required: true,
       },
       country: {
+        type: String,
+        required: true,
+      },
+      state: {
         type: String,
         required: true,
       },

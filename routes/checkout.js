@@ -7,50 +7,49 @@ const verifyToken = require("../middleware/verifyToken");
 router.post("/post/checkout", verifyToken, async (req, res) => {
   try {
     const userId = req.userId;
+    const recordDate = new Date();
 
     let { cartItems, summary, address, payment } = req.body;
-    // const newAddress = [address];
 
     // Create a new checkout entry
     const newCheckout = await Checkout.create({
       userId,
       cartItems,
+      recordDate,
       summary,
       address,
       payment,
     });
 
-    // console.log(address);
-    // console.log(newAddress);
-
-    res.status(201).json(newCheckout);
+    res.status(201).json({
+      message: "Woohoo!",
+      subMessage: "Your order has been placed.",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 });
 
-// GET Get a specific checkout entry by ID
-router.get("/:id", verifyToken, async (req, res) => {
+// GET Request to Get a checkout entry
+router.get("/get/checkout", verifyToken, async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.userId;
+    console.log(userId);
 
-    // Find the checkout entry by ID
-    const checkout = await Checkout.findById(id);
+    // Find the checkout entry for the user
+    const checkouts = await Checkout.find({ userId });
 
-    if (!checkout) {
-      return res.status(404).json({ message: "Checkout not found" });
+    if (!checkouts) {
+      return res
+        .status(404)
+        .json({ message: "Looks like you have not yet made any purchase" });
     }
 
-    if (checkout.userId !== req.userId) {
-      return res.status(401).json({ message: "User does not exist" });
-    }
-
-    res.json(checkout);
+    res.json(checkouts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 });
-
 module.exports = router;
