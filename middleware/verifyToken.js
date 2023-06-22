@@ -6,8 +6,8 @@ const verifyToken = (req, res, next) => {
 
   if (!token) {
     return res.status(401).json({
-      message: "Access denied",
-      subMessage: "Please login to continue",
+      message: "You are not logged in",
+      subMessage: "Please login to continue shopping!",
     });
   }
 

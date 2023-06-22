@@ -128,7 +128,7 @@ router.post("/admin/login", async (req, res) => {
       sameSite: "strict",
     });
 
-    res.json({ accessToken });
+    res.json({ message: "You have successfully logged in", accessToken });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
