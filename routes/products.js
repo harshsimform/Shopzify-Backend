@@ -2,11 +2,25 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/product");
 
-// Getting all
+// Getting user products
 router.get("/", async (req, res) => {
   const limit = parseInt(req.query.limit);
   try {
-    const products = await Product.find().limit(limit);
+    const products = await Product.find({ status: true }).limit(limit);
+    const allData = {
+      productDetails: products,
+    };
+    res.json(allData);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+//Getting admin products
+router.get("/admin/products", async (req, res) => {
+  const limit = parseInt(req.query.limit);
+  try {
+    const products = await Product.find({}).limit(limit);
     const allData = {
       productDetails: products,
     };
@@ -21,10 +35,41 @@ router.get("/:id", getProduct, (req, res) => {
   res.json(res.product);
 });
 
+// GET query for Nav Menu and Submenu
+router.get("/nav/:menu/:sublabel", async (req, res) => {
+  const menu = req.params.menu.toLowerCase();
+  const sublabel = req.params.sublabel.toLowerCase();
+  console.log(menu);
+
+  let gender;
+  if (menu === "men") {
+    gender = "male";
+  } else if (menu === "women") {
+    gender = "female";
+  } else {
+    gender = menu;
+  }
+
+  try {
+    const products = await Product.find({
+      $and: [{ gender }, { category: sublabel }],
+      status: true,
+    });
+
+    const searchData = {
+      products: products,
+    };
+
+    res.json(searchData);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Search Products by category name
 router.get("/category/:key", async (req, res) => {
   let data = await Product.find({
-    $or: [{ category: { $regex: req.params.key } }],
+    $or: [{ category: { $regex: req.params.key } }, { status: true }],
   });
   res.send(data);
 });
@@ -35,10 +80,15 @@ router.get("/search/:key", async (req, res) => {
   const regex = new RegExp(searchKey, "i");
 
   const data = await Product.find({
-    $or: [
-      { name: { $regex: regex } },
-      { description: { $regex: regex } },
-      { category: { $regex: regex } },
+    $and: [
+      {
+        $or: [
+          { name: { $regex: regex } },
+          { description: { $regex: regex } },
+          { category: { $regex: regex } },
+        ],
+      },
+      { status: true },
     ],
   });
 
@@ -57,7 +107,8 @@ router.post("/", async (req, res) => {
       quantity: req.body.quantity,
       gender: req.body.gender,
       category: req.body.category,
-      displaySection: req.body.displaySection,
+      status: req.body.status,
+      badge: req.body.badge,
     });
 
     const newProduct = await product.save();

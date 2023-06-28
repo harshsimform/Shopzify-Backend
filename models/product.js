@@ -20,6 +20,7 @@ const productSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
+    set: (value) => value.toLowerCase(),
   },
   quantity: {
     type: Number,
@@ -32,8 +33,14 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
+    set: (value) => value.toLowerCase(),
   },
-  displaySection: {
+  status: {
+    type: Boolean,
+    default: true,
+    required: true,
+  },
+  badge: {
     type: String,
     required: true,
   },

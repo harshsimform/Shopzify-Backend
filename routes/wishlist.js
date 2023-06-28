@@ -55,13 +55,10 @@ router.post('/wishlist/toggle', verifyToken, async (req, res) => {
 				category: productDetails.category,
 				description: productDetails.description,
 				discountedPrice: productDetails.discountedPrice,
-				displaySection: productDetails.displaySection,
 				gender: productDetails.gender,
 				image: productDetails.image,
 				name: productDetails.name,
 				originalPrice: productDetails.originalPrice,
-				quantity: productDetails.quantity,
-				recordDate: productDetails.recordDate,
 			};
 
 			wishlist.products.push(newProduct);
