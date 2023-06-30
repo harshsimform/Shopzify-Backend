@@ -38,8 +38,7 @@ router.get("/:id", getProduct, (req, res) => {
 // GET query for Nav Menu and Submenu
 router.get("/nav/:menu/:sublabel", async (req, res) => {
   const menu = req.params.menu.toLowerCase();
-  const sublabel = req.params.sublabel.toLowerCase();
-  console.log(menu);
+  const sublabel = req.params.sublabel.toLowerCase() || undefined;
 
   let gender;
   if (menu === "men") {
@@ -50,11 +49,21 @@ router.get("/nav/:menu/:sublabel", async (req, res) => {
     gender = menu;
   }
 
-  try {
-    const products = await Product.find({
+  let query;
+  if (sublabel == "undefined") {
+    query = {
+      $or: [{ gender }, { category: menu }],
+      status: true,
+    };
+  } else {
+    query = {
       $and: [{ gender }, { category: sublabel }],
       status: true,
-    });
+    };
+  }
+
+  try {
+    const products = await Product.find(query);
 
     const searchData = {
       products: products,
