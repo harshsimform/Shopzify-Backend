@@ -19,14 +19,8 @@ const verifyAdminToken = async (req, res, next) => {
     // Retrieve the user from the database
     const user = await User.findById(decoded.userId);
 
-    if (!user) {
-      return res.status(401).json({
-        message: "Unauthorized access",
-      });
-    }
-
     // Check if the user is an admin
-    if (user.role !== "admin") {
+    if (!user || user.role !== "admin") {
       return res.status(401).json({
         message: "Unauthorized access",
       });

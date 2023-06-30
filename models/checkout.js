@@ -10,6 +10,11 @@ const checkoutSchema = new mongoose.Schema({
 		type: Date,
 		required: true,
 	},
+	status: {
+		type: String,
+		required: true,
+		default: 'Order Placed',
+	},
 	cartItems: [
 		{
 			discountedPrice: {
@@ -119,5 +124,22 @@ const checkoutSchema = new mongoose.Schema({
 		},
 	],
 });
+
+const steps = [
+	'Order Placed',
+	'Processing',
+	'Shipped',
+	'Out for Delivery',
+	'Delivered',
+];
+
+checkoutSchema.methods.updateStatus = function (stepIndex) {
+	if (stepIndex >= 0 && stepIndex < steps.length) {
+		this.cartItems.forEach((item) => {
+			item.status = steps[stepIndex];
+		});
+		this.status = steps[stepIndex];
+	}
+};
 
 module.exports = mongoose.model('Checkout', checkoutSchema);

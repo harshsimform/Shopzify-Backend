@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Checkout = require("../models/checkout");
 const verifyToken = require("../middleware/verifyToken");
-const verifyAdminToken = require("../middleware/verifyAdminToken");
 
 // POST Create a new checkout entry
 router.post("/post/checkout", verifyToken, async (req, res) => {
@@ -54,7 +53,7 @@ router.get("/get/checkout", verifyToken, async (req, res) => {
 });
 
 // GET Request to Get all checkout records (accessible only by admin)
-router.get("/admin/checkouts", verifyAdminToken, async (req, res) => {
+router.get("/admin/checkouts", async (req, res) => {
   try {
     // Find all checkout records
     const adminCheckouts = await Checkout.find();
@@ -69,4 +68,50 @@ router.get("/admin/checkouts", verifyAdminToken, async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+// PUT Request to Update the status of a product in a checkout entry
+router.patch("/admin/checkout/:checkoutId/status", async (req, res) => {
+  try {
+    const { checkoutId } = req.params;
+    const { stepIndex } = req.body;
+
+    // Find the checkout entry by ID
+    const checkout = await Checkout.findById(checkoutId);
+
+    if (!checkout) {
+      return res.status(404).json({ message: "Checkout entry not found" });
+    }
+
+    // Update the status based on the step index
+    checkout.updateStatus(stepIndex);
+
+    // Save the updated checkout entry
+    await checkout.save();
+
+    res.json({ message: "Checkout status updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// GET Request to Get the order details by ID
+router.get("/order/:orderId", async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    // Find the order by ID
+    const order = await Checkout.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 module.exports = router;
